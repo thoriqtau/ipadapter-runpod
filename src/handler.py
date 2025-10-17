@@ -24,7 +24,6 @@ IPADATER_PLUS = "./ip-adapter-plus_sd15.bin"
 IPADAPTER_FACE = "./ip-adapter-full-face_sd15.bin"
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-DTYPE = torch.float16 if str(DEVICE).__contains__('cuda') else torch.float32
 
 logger = RunPodLogger()
 
@@ -34,14 +33,14 @@ logger = RunPodLogger()
 def get_pipeline():
     image_encoder = CLIPVisionModelWithProjection.from_pretrained(
         IMAGE_ENCODER_PATH,
-        torch_dtype=DTYPE,
+        torch_dtype=torch.float16,
         use_safetensors=True,
         local_files_only=True
     ).to(DEVICE)
 
     pipe = StableDiffusionPipeline.from_pretrained(
         BASE_MODEL_PATH,
-        torch_dtype=DTYPE,
+        torch_dtype=torch.float16,
         image_encoder=image_encoder,
         safety_checker=None,
         use_safetensors=True,
